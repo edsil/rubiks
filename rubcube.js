@@ -40,7 +40,7 @@ helpText += "- 'r' rewinds the cube to original position \n"
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  helpCanvas = createGraphics(285, 100);
+  helpCanvas = createGraphics(285, 110);
   helpCanvas.background(0);
   helpCanvas.fill(204);
   helpCanvas.textSize(14);
