@@ -27,6 +27,7 @@ tempCubies = [];
 tempOrder = [];
 sortOrder = null;
 keyBuffer = [];
+rewinder = [];
 
 var helpCanvas = null;
 var helpText = "- Click and drag the cube to rotate it \n"
@@ -34,6 +35,7 @@ helpText += "- Use the keys 'q', 'w', 'e' to rotat the X axis \n"
 helpText += "- Use the keys 'a', 's', 'd' to rotat the Y axis \n"
 helpText += "- Use the keys 'z', 'x', 'c' to rotat the Z axis \n"
 helpText += "- Holding shift to rotate in the other direction \n"
+helpText += "- 'r' rewinds the cube to original position \n"
 
 
 function setup() {
@@ -69,7 +71,7 @@ function setup() {
 
 function draw() {
   background(0);
-  image(helpCanvas, -windowWidth/2, -windowHeight/2);
+  image(helpCanvas, -windowWidth / 2, -windowHeight / 2);
   orbitControl();
   turning = false;
   for (a = 0; a < cube.length; a++) {
@@ -84,7 +86,6 @@ function draw() {
     needResort = false;
   }
   if (keyBuffer.length > 0) waitingToTurn();
-  
 }
 
 function keyTyped() {
@@ -94,12 +95,23 @@ function keyTyped() {
     key: key,
     dir: dir
   });
+  rewinder.push({
+    key: key,
+    dir: -dir
+  });
 }
 
 function waitingToTurn() {
-  if (!turning && !needResort) {
+  if (!turning && !needResort && keyBuffer.length > 0) {
     var next = keyBuffer.shift();
-    callToTurn(next.key.toLowerCase(), next.dir);
+    if (next) callToTurn(next.key.toLowerCase(), next.dir);
+  }
+}
+
+function rewind() {
+  b = rewinder.length;
+  for(c=0; c<=b; c++){
+    keyBuffer.push(rewinder.pop());
   }
 }
 
@@ -129,10 +141,11 @@ function callToTurn(key, dir) {
     case 'x':
       turnCube("z", 1, dir);
       break;
-  }
-
-  if (key === 'c' || key == 'C') {
-    if (!turning && !needResort) turnCube("z", 2, dir);
+    case 'c':
+      turnCube("z", 2, dir);
+      break;
+    case 'r':
+      rewind();
   }
 
 
